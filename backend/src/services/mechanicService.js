@@ -1,5 +1,6 @@
 import Mechanic from "../models/Mechanic.js";
 import AppError from "../utils/AppError.js";
+import Booking from "../models/Booking.js";
 
 const allowedStatuses = ["AVAILABLE", "BUSY", "OFFLINE"];
 
@@ -72,5 +73,37 @@ export const getMechanicsService = async ({
       total,
       totalPages: Math.ceil(total / limitNumber),
     },
+  };
+};
+
+export const getMechanicByIdService = async (mechanicId) => {
+  const mechanic = await Mechanic.findById(mechanicId);
+
+  if (!mechanic) {
+    throw new AppError("Mechanic not found", 404);
+  }
+
+  let currentBooking = null;
+  let lastBooking = null;
+
+  // Get current booking if one exists
+  if (mechanic.currentBookingId) {
+    currentBooking = await Booking.findById(mechanic.currentBookingId)
+      .populate("customerId", "name email phone")
+      .populate("mechanicId", "name phone status");
+  }
+
+  // Get the most recent booking assigned to this mechanic
+  lastBooking = await Booking.findOne({
+    mechanicId: mechanic._id,
+  })
+    .sort({ scheduledAt: -1 }) //newest first = -1
+    .populate("customerId", "name email phone")
+    .populate("mechanicId", "name phone status");
+
+  return {
+    mechanic,
+    currentBooking,
+    lastBooking,
   };
 };

@@ -1,8 +1,12 @@
 import express from "express";
-import { getMechanics } from "../controllers/mechanicController.js";
+import {
+  getMechanics,
+  getMechanicById,
+} from "../controllers/mechanicController.js";
 
 const router = express.Router();
 
 router.get("/", getMechanics);
+router.get("/:id", getMechanicById);
 
 export default router;

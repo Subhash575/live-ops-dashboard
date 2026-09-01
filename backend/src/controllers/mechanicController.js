@@ -1,4 +1,7 @@
-import { getMechanicsService } from "../services/mechanicService.js";
+import {
+  getMechanicsService,
+  getMechanicByIdService,
+} from "../services/mechanicService.js";
 
 export const getMechanics = async (req, res, next) => {
   try {
@@ -8,6 +11,19 @@ export const getMechanics = async (req, res, next) => {
       success: true,
       data: result.mechanics,
       pagination: result.pagination,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getMechanicById = async (req, res, next) => {
+  try {
+    const result = await getMechanicByIdService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      data: result,
     });
   } catch (error) {
     next(error);
