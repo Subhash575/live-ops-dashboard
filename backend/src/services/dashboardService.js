@@ -24,6 +24,10 @@ export const getDashboardService = async () => {
     bookingStatus,
     serviceBreakdown,
   ] = await Promise.all([
+    // =========================
+    // OVERVIEW
+    // =========================
+
     // Total bookings
     Booking.countDocuments(),
 
@@ -65,6 +69,14 @@ export const getDashboardService = async () => {
           },
         },
       },
+      {
+        $project: {
+          _id: 0,
+          total: {
+            $round: ["$total", 2],
+          },
+        },
+      },
     ]),
 
     // Active mechanics
@@ -82,8 +94,11 @@ export const getDashboardService = async () => {
       },
     }),
 
+    // =========================
     // ANALYTICS
-    // 1. Bookings over time (every date book)
+    // =========================
+
+    // 1. Bookings over time
     Booking.aggregate([
       {
         $group: {
@@ -126,6 +141,14 @@ export const getDashboardService = async () => {
         },
       },
       {
+        $project: {
+          _id: 1,
+          revenue: {
+            $round: ["$revenue", 2],
+          },
+        },
+      },
+      {
         $sort: {
           _id: 1,
         },
@@ -161,13 +184,7 @@ export const getDashboardService = async () => {
             $sum: 1,
           },
           revenue: {
-            // round of value up to 2 decimal
-            $round: [
-              {
-                $sum: "$amount",
-              },
-              2,
-            ],
+            $sum: "$amount",
           },
         },
       },
@@ -177,7 +194,9 @@ export const getDashboardService = async () => {
           category: "$_id.category",
           service: "$_id.service",
           count: 1,
-          revenue: 1,
+          revenue: {
+            $round: ["$revenue", 2],
+          },
         },
       },
       {
