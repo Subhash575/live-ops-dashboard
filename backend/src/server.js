@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.get("/api/health", (req, res) => {
     message: "Instant Mechanic API is running",
   });
 });
+
+app.use("/api/bookings", bookingRoutes);
 
 const PORT = process.env.PORT || 5000;
 
