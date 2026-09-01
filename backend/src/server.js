@@ -4,6 +4,7 @@ import morgan from "morgan";
 import connectDB from "./config/db.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import mechanicRoutes from "./routes/mechanicRoutes.js";
+import customerRoutes from "./routes/customerRoutes.js";
 import errorHandler from "./middleware/errorHandler.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -27,6 +28,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/mechanics", mechanicRoutes);
+app.use("/api/customers", customerRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
