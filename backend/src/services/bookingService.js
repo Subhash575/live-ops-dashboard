@@ -1,6 +1,14 @@
 import Booking from "../models/Booking.js";
 import Customer from "../models/Customer.js";
 
+const allowedSortFields = [
+  "bookingId",
+  "status",
+  "amount",
+  "scheduledAt",
+  "createdAt",
+];
+
 export const getBookingsService = async ({
   search,
   status,
@@ -43,15 +51,28 @@ export const getBookingsService = async ({
     ];
   }
 
-  // Pagination
-  const pageNumber = Number(page);
-  const limitNumber = Number(limit);
+  // Pagination Validation
+  const pageNumber =
+    Number.isInteger(Number(page)) && Number(page) > 0 ? Number(page) : 1;
+
+  const requestedLimit = Number(limit);
+
+  const limitNumber =
+    Number.isInteger(requestedLimit) && requestedLimit > 0
+      ? Math.min(requestedLimit, 100)
+      : 10;
 
   const skip = (pageNumber - 1) * limitNumber;
 
-  // Sorting
+  // Sorting Validation
+  const safeSortBy = allowedSortFields.includes(sortBy)
+    ? sortBy
+    : "scheduledAt";
+
+  const safeSortOrder = sortOrder === "asc" ? "asc" : "desc";
+
   const sort = {
-    [sortBy]: sortOrder === "asc" ? 1 : -1,
+    [safeSortBy]: safeSortOrder === "asc" ? 1 : -1,
   };
 
   // Get bookings + total
