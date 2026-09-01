@@ -1,9 +1,9 @@
-import dotenv from "dotenv";
-dotenv.config();
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
-import { connectDB } from "./config/db.js";
+import connectDB from "./config/db.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(
@@ -24,6 +24,8 @@ app.get("/api/health", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server start at PORT:${PORT}`);
+  });
 });
