@@ -1,5 +1,6 @@
 import Booking from "../models/Booking.js";
 import Customer from "../models/Customer.js";
+import Mechanic from "../models/Mechanic.js";
 
 const allowedSortFields = [
   "bookingId",
@@ -7,6 +8,14 @@ const allowedSortFields = [
   "amount",
   "scheduledAt",
   "createdAt",
+];
+
+const allowedStatuses = [
+  "PENDING",
+  "ASSIGNED",
+  "ON_THE_WAY",
+  "COMPLETED",
+  "CANCELLED",
 ];
 
 export const getBookingsService = async ({
@@ -21,6 +30,10 @@ export const getBookingsService = async ({
 
   // Status filtering
   if (status) {
+    if (!allowedStatuses.includes(status)) {
+      throw new Error(`Invalid booking status: ${status}`);
+    }
+
     query.status = status;
   }
 
@@ -38,6 +51,12 @@ export const getBookingsService = async ({
 
     const customerIds = customers.map((customer) => customer._id);
 
+    const mechanics = await Mechanic.find({
+      $or: [{ name: searchRegex }, { phone: searchRegex }],
+    }).select("_id");
+
+    const mechanicIds = mechanics.map((mechanic) => mechanic._id);
+
     query.$or = [
       // Booking ID
       { bookingId: searchRegex },
@@ -48,6 +67,8 @@ export const getBookingsService = async ({
 
       // Customer
       { customerId: { $in: customerIds } },
+      // Mechanic
+      { mechanicId: { $in: mechanicIds } },
     ];
   }
 
