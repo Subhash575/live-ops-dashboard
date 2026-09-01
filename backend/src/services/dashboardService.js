@@ -175,6 +175,11 @@ export const getDashboardService = async () => {
     // 4. Service/category breakdown
     Booking.aggregate([
       {
+        $match: {
+          status: "COMPLETED",
+        },
+      },
+      {
         $group: {
           _id: {
             category: "$category",
