@@ -1,6 +1,7 @@
 import Booking from "../models/Booking.js";
 import Customer from "../models/Customer.js";
 import Mechanic from "../models/Mechanic.js";
+import AppError from "../utils/AppError.js";
 
 const allowedSortFields = [
   "bookingId",
@@ -31,7 +32,7 @@ export const getBookingsService = async ({
   // Status filtering
   if (status) {
     if (!allowedStatuses.includes(status)) {
-      throw new Error(`Invalid booking status: ${status}`);
+      throw new AppError(`Invalid booking status: ${status}`, 400);
     }
 
     query.status = status;
@@ -117,4 +118,16 @@ export const getBookingsService = async ({
       totalPages: Math.ceil(total / limitNumber),
     },
   };
+};
+
+export const getBookingByIdService = async (bookingId) => {
+  const booking = await Booking.findOne({ bookingId })
+    .populate("customerId", "name email phone")
+    .populate("mechanicId", "name phone status jobsCompleted");
+
+  if (!booking) {
+    throw new AppError("Booking not found", 404);
+  }
+
+  return booking;
 };

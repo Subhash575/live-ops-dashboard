@@ -3,6 +3,7 @@ import cors from "cors";
 import morgan from "morgan";
 import connectDB from "./config/db.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import errorHandler from "./middleware/errorHandler.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -24,6 +25,9 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/bookings", bookingRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

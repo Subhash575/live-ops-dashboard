@@ -1,4 +1,7 @@
-import { getBookingsService } from "../services/bookingService.js";
+import {
+  getBookingsService,
+  getBookingByIdService,
+} from "../services/bookingService.js";
 
 export const getBookings = async (req, res, next) => {
   try {
@@ -8,6 +11,19 @@ export const getBookings = async (req, res, next) => {
       success: true,
       data: result.bookings,
       pagination: result.pagination,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getBookingById = async (req, res, next) => {
+  try {
+    const booking = await getBookingByIdService(req.params.id);
+
+    res.status(200).json({
+      success: true,
+      data: booking,
     });
   } catch (error) {
     next(error);
