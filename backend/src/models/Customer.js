@@ -12,6 +12,7 @@ const customerSchema = new Schema(
     email: {
       type: String,
       required: true,
+      unique: true,
       lowercase: true,
       trim: true,
     },
@@ -19,6 +20,7 @@ const customerSchema = new Schema(
     phone: {
       type: String,
       required: true,
+      trim: true,
     },
   },
   {
@@ -26,4 +28,5 @@ const customerSchema = new Schema(
   },
 );
 
-export const CustomerModel = mongoose.model("Customer", customerSchema);
+const Customer = mongoose.model("Customer", customerSchema);
+export default Customer;

@@ -10,15 +10,22 @@ const mechanicSchema = new Schema(
       trim: true,
     },
 
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     status: {
       type: String,
-      enum: ["AVAILABLE", "ON_JOB", "OFFLINE"],
+      enum: ["AVAILABLE", "BUSY", "OFFLINE"],
       default: "AVAILABLE",
     },
 
     jobsCompleted: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     currentBookingId: {
@@ -33,4 +40,5 @@ const mechanicSchema = new Schema(
   },
 );
 
-export const MechanicModel = mongoose.model("Mechanic", mechanicSchema);
+const Mechanic = mongoose.model("Mechanic", mechanicSchema);
+export default Mechanic;

@@ -8,6 +8,7 @@ const bookingSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
 
     customerId: {
@@ -23,19 +24,34 @@ const bookingSchema = new Schema(
     },
 
     vehicle: {
-      make: String,
-      model: String,
-      year: Number,
+      make: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+
+      model: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+
+      year: {
+        type: Number,
+        required: true,
+      },
     },
 
     service: {
       type: String,
       required: true,
+      trim: true,
     },
 
     category: {
       type: String,
       required: true,
+      trim: true,
     },
 
     status: {
@@ -60,4 +76,5 @@ const bookingSchema = new Schema(
   },
 );
 
-module.exports = mongoose.model("Booking", bookingSchema);
+const Mechanic = mongoose.model("Booking", bookingSchema);
+export default Mechanic;
